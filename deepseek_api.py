@@ -14,7 +14,10 @@ def procesar():
     if request.method == 'GET':
         return jsonify({"mensaje": "Este endpoint solo acepta POST"}), 405
     else:
+        # Recibe los datos enviados desde GeneXus
         data = request.json
+        # Aquí puedes agregar la lógica de procesamiento con DeepSeek
+        # Por ahora, simplemente devolvemos los datos recibidos como respuesta
         return jsonify({
             "status": "success",
             "mensaje": "Datos recibidos correctamente",
