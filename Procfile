@@ -1,1 +1,1 @@
-web: gunicorn deepseek_api:app
+gunicorn deepseek_api:app
