@@ -6,7 +6,7 @@ app = Flask(__name__)
 # Endpoint para la raíz
 @app.route('/')
 def index():
-    return jsonify({"mensaje": "Bienvenido al servicio DeepSeek API 200"}), 200
+    return jsonify({"mensaje": "Bienvenido al servicio DeepSeek API 300"}), 200
 
 # Endpoint para procesar datos
 @app.route('/procesar', methods=['POST'])
