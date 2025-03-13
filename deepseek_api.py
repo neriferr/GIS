@@ -9,20 +9,20 @@ def index():
     return jsonify({"mensaje": "Bienvenido al servicio DeepSeek API"}), 200
 
 # Endpoint para procesar datos
-@app.route('/procesar', methods=['GET', 'POST'])
+@app.route('/procesar', methods=['POST'])
 def procesar():
-    if request.method == 'GET':
-        return jsonify({"mensaje": "Este endpoint solo acepta POST"}), 405
-    else:
-        # Recibe los datos enviados desde GeneXus
-        data = request.json
-        # Aquí puedes agregar la lógica de procesamiento con DeepSeek
-        # Por ahora, simplemente devolvemos los datos recibidos como respuesta
-        return jsonify({
-            "status": "success",
-            "mensaje": "Datos recibidos correctamente",
-            "datos_recibidos": data
-        })
+    # Recibe los datos enviados desde GeneXus
+    data = request.get_json()
+    
+    if data is None:
+        return jsonify({"status": "error", "mensaje": "Solicitud inválida, envíe datos en formato JSON"}), 400
+    
+    # Aquí puedes agregar la lógica de procesamiento con DeepSeek
+    return jsonify({
+        "status": "success",
+        "mensaje": "Datos recibidos correctamente",
+        "datos_recibidos": data
+    })
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))  # Render asigna el puerto dinámicamente
