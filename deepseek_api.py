@@ -43,7 +43,7 @@ def deepseek_procesar(pregunta):
         respuesta = response.json()
         respuesta_texto = respuesta['choices'][0]['message']['content']
 
-        return respuesta_texto#.encode("utf-8").decode("utf-8")  # Elimina BOM si existiera
+        return respuesta_texto.encode("utf-8").decode("utf-8")  # Elimina BOM si existiera
 
     except Exception as e:
         return f"Error al procesar la pregunta: {str(e)}"
@@ -62,8 +62,8 @@ def procesar():
         respuesta = deepseek_procesar(pregunta)
         
         # Devolver JSON con UTF-8 sin BOM
-        #return jsonify({"respuesta": respuesta}), 200, {"Content-Type": "application/json; charset=utf-8"}
-        return jsonify({"respuesta": respuesta})
+        return jsonify({"respuesta": respuesta}), 200, {"Content-Type": "application/json; charset=utf-8"}
+        #return jsonify({"respuesta": respuesta})
     except json.JSONDecodeError:
         return jsonify({"error": "Entrada JSON inválida"}), 300
     except Exception as e:
