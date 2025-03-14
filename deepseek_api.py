@@ -43,7 +43,7 @@ def deepseek_procesar(pregunta):
         respuesta = response.json()
         respuesta_texto = respuesta['choices'][0]['message']['content']
 
-        return respuesta_texto.encode("utf-8").decode("utf-8")  # Elimina BOM si existiera
+        return respuesta_texto#.encode("utf-8").decode("utf-8")  # Elimina BOM si existiera
 
     except Exception as e:
         return f"Error al procesar la pregunta: {str(e)}"
