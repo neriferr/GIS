@@ -62,8 +62,8 @@ def procesar():
         respuesta = deepseek_procesar(pregunta)
         
         # Devolver JSON con UTF-8 sin BOM
-        return jsonify({"respuesta": respuesta}), 200, {"Content-Type": "application/json; charset=utf-8"}
-    
+        #return jsonify({"respuesta": respuesta}), 200, {"Content-Type": "application/json; charset=utf-8"}
+        return jsonify({"respuesta": respuesta})
     except json.JSONDecodeError:
         return jsonify({"error": "Entrada JSON inválida"}), 400
     except Exception as e:
