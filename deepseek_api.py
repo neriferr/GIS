@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import requests
+import json
 
 app = Flask(__name__)
 
@@ -38,26 +39,35 @@ def deepseek_procesar(pregunta):
         response = requests.post(DEEPSEEK_API_URL, headers=headers, json=payload)
         response.raise_for_status()  # Lanza una excepción si la solicitud no fue exitosa
         
-        # Extraer y devolver la respuesta
+        # Extraer y devolver la respuesta en UTF-8 sin BOM
         respuesta = response.json()
-        return respuesta['choices'][0]['message']['content']
-    
+        respuesta_texto = respuesta['choices'][0]['message']['content']
+
+        return respuesta_texto.encode("utf-8").decode("utf-8")  # Elimina BOM si existiera
+
     except Exception as e:
-        # Manejo de errores
         return f"Error al procesar la pregunta: {str(e)}"
 
 # Endpoint para procesar preguntas
 @app.route('/procesar', methods=['POST'])
 def procesar():
-    # Recibe la pregunta desde GeneXus
-    data = request.json
-    pregunta = data.get("pregunta", "")
+    try:
+        # Decodificar manualmente la entrada en UTF-8 sin BOM
+        raw_data = request.data.decode("utf-8-sig")  # Elimina BOM si existe
+        data = json.loads(raw_data)
+
+        pregunta = data.get("pregunta", "")
+        
+        # Procesa la pregunta con DeepSeek
+        respuesta = deepseek_procesar(pregunta)
+        
+        # Devolver JSON con UTF-8 sin BOM
+        return jsonify({"respuesta": respuesta}), 200, {"Content-Type": "application/json; charset=utf-8"}
     
-    # Procesa la pregunta con DeepSeek
-    respuesta = deepseek_procesar(pregunta)
-    
-    # Devuelve la respuesta en formato JSON
-    return jsonify({"respuesta": respuesta})
+    except json.JSONDecodeError:
+        return jsonify({"error": "Entrada JSON inválida"}), 400
+    except Exception as e:
+        return jsonify({"error": f"Error al procesar la pregunta: {str(e)}"}), 500
 
 # Inicia el servidor Flask
 if __name__ == '__main__':
