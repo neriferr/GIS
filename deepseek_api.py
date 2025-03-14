@@ -65,7 +65,7 @@ def procesar():
         return jsonify({"respuesta": respuesta}), 200, {"Content-Type": "application/json; charset=utf-8"}
         #return jsonify({"respuesta": respuesta})
     except json.JSONDecodeError:
-        return jsonify({"error": "Entrada JSON inválida"}), 300
+        return jsonify({"error": "Entrada JSON inválida"}), 400
     except Exception as e:
         return jsonify({"error": f"Error al procesar la pregunta: {str(e)}"}), 500
 
