@@ -8,7 +8,7 @@ app.use(express.json());
 const dbConfig = {
   user: 'sa',
   password: 'Admin123',
-  server: 'NERFER',    // o la IP de tu SQL Server
+  server: '192.168.1.5',    // o la IP de tu SQL Server
   database: 'Global_Invest_Suite',
   options: { trustServerCertificate: true }
 };
