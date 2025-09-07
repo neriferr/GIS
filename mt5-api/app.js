@@ -6,10 +6,10 @@ app.use(express.json());
 
 // 🔧 CONFIGURA AQUÍ TUS DATOS DE SQL SERVER
 const dbConfig = {
-  user: 'sa',
-  password: 'Admin123',
-  server: '192.168.1.5',    // o la IP de tu SQL Server
-  database: 'Global_Invest_Suite',
+  user: 'avnadmin',
+  password: 'AVNS_-G5oqCrk-xKPUb1iOTg',
+  server: 'gis-mysql-gis.d.aivencloud.com',    // o la IP de tu SQL Server
+  database: 'defaultdb',
   options: { trustServerCertificate: true }
 };
 
