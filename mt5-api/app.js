@@ -7,7 +7,7 @@ app.use(express.json());
 // 📦 Configuración de la conexión a MySQL (usando variables de entorno)
 const pool = mysql.createPool({
   host: process.env.DB_HOST,       // ej: gis-mysql-gis.aivencloud.com
-  port: process.env.DB_PORT,       // ej: 15072
+  port: 15072/*process.env.DB_PORT*/,       // ej: 15072
   user: process.env.DB_USER,       // ej: avnadmin
   password: process.env.DB_PASS,   // tu nueva contraseña
   database: process.env.DB_NAME,
