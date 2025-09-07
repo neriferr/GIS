@@ -1,28 +1,32 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 app.use(express.json());
 
 // 📦 Configuración de la conexión a MySQL (usando variables de entorno)
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,       			// ej: gis-mysql-gis.aivencloud.com
-  port: Number(process.env.DB_PORT),        // ej: 15072
-  user: process.env.DB_USER,       			// ej: avnadmin
-  password: process.env.DB_PASS,   			// tu nueva contraseña
-  database: process.env.DB_NAME,
+  host: process.env.DB_HOST,           // ej: gis-mysql-gis.d.aivencloud.com
+  port: Number(process.env.DB_PORT),   // ej: 15072
+  user: process.env.DB_USER,           // ej: avnadmin
+  password: process.env.DB_PASS,       // tu contraseña
+  database: process.env.DB_NAME,       // ej: defaultdb
   ssl: {
     ca: fs.readFileSync(path.join(__dirname, 'certs', 'ca.pem'))
   }
 });
 
-//	Para verificar si la API falla por MySQL:
+// 🔹 Verificar conexión MySQL al iniciar
 pool.getConnection()
   .then(conn => {
     console.log('✅ Conexión MySQL OK');
     conn.release();
   })
-  .catch(err => console.error('❌ Error conectando a MySQL:', err));
+  .catch(err => {
+    console.error('❌ Error conectando a MySQL:', err.message);
+  });
 
 // 🟢 Endpoint para obtener señales activas
 app.get('/signals', async (req, res) => {
