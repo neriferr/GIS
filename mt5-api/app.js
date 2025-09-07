@@ -16,6 +16,14 @@ const pool = mysql.createPool({
   }
 });
 
+//	Para verificar si la API falla por MySQL:
+pool.getConnection()
+  .then(conn => {
+    console.log('✅ Conexión MySQL OK');
+    conn.release();
+  })
+  .catch(err => console.error('❌ Error conectando a MySQL:', err));
+
 // 🟢 Endpoint para obtener señales activas
 app.get('/signals', async (req, res) => {
   try {
