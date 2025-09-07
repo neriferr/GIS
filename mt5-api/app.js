@@ -1,38 +1,41 @@
 const express = require('express');
-const sql = require('mssql');
+const mysql = require('mysql2/promise');
 
 const app = express();
 app.use(express.json());
 
-// 🔧 CONFIGURA AQUÍ TUS DATOS DE SQL SERVER
-const dbConfig = {
-  user: 'avnadmin',
-  password: 'AVNS_-G5oqCrk-xKPUb1iOTg',
-  server: 'gis-mysql-gis.d.aivencloud.com',    // o la IP de tu SQL Server
-  database: 'defaultdb',
-  options: { trustServerCertificate: true }
-};
+// 📦 Configuración de la conexión a MySQL (usando variables de entorno)
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,       // ej: gis-mysql-gis.aivencloud.com
+  port: process.env.DB_PORT,       // ej: 15072
+  user: process.env.DB_USER,       // ej: avnadmin
+  password: process.env.DB_PASS,   // tu nueva contraseña
+  database: process.env.DB_NAME,   // ej: defaultdb
+  ssl: { rejectUnauthorized: true } // Aiven requiere SSL
+});
 
-// Endpoint para obtener señales pendientes
+// 🟢 Endpoint para obtener señales activas
 app.get('/signals', async (req, res) => {
   try {
-    await sql.connect(dbConfig);
-    const result = await sql.query`SELECT 
-    GISTRNOperacionesForexID   AS id,
-    GISTRNOperacionesForexPar  AS symbol,
-    GISTRNOperacionesForexTipo_Ope AS side,
-    GISTRNOperacionesForexLotaje   AS volume,
-    GISTRNOperacionesForexPrecio_E AS entry,
-    GISTRNOperacionesForexTake_Pro AS takeProfit,
-    GISTRNOperacionesForexStock_Lo AS stopLoss
-  FROM GISTRNOperacionesForex
-  WHERE GISTRNOperacionesForexEstado = 'ACTIVO'`;
-    res.json(result.recordset);
+    const [rows] = await pool.query(`
+      SELECT 
+        GISTRNOperacionesForexID   AS id,
+        GISTRNOperacionesForexPar  AS symbol,
+        GISTRNOperacionesForexTipo_Ope AS side,
+        GISTRNOperacionesForexLotaje   AS volume,
+        GISTRNOperacionesForexPrecio_E AS entry,
+        GISTRNOperacionesForexTake_Pro AS takeProfit,
+        GISTRNOperacionesForexStock_Lo AS stopLoss
+      FROM GISTRNOperacionesForex
+      WHERE GISTRNOperacionesForexEstado = 'ACTIVO'
+    `);
+    res.json(rows);
   } catch (err) {
-    res.status(500).send(err.message);
+    console.error('❌ Error en consulta:', err.message);
+    res.status(500).send('Error en el servidor');
   }
 });
 
-// ⚡ Puerto dinámico para Render, fallback a 3000 para local
+// 🚀 Puerto dinámico para Render (fallback 3000 en local)
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ API lista en puerto ${PORT}`));
