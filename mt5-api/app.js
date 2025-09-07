@@ -10,8 +10,10 @@ const pool = mysql.createPool({
   port: process.env.DB_PORT,       // ej: 15072
   user: process.env.DB_USER,       // ej: avnadmin
   password: process.env.DB_PASS,   // tu nueva contraseña
-  database: process.env.DB_NAME,   // ej: defaultdb
-  ssl: { rejectUnauthorized: true } // Aiven requiere SSL
+  database: process.env.DB_NAME,
+  ssl: {
+    ca: fs.readFileSync('./certs/ca.pem')  // CA descargada desde Aiven
+  }
 });
 
 // 🟢 Endpoint para obtener señales activas
